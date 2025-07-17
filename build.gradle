@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+    id "io.freefair.lombok" version "8.6"
+    id "org.springframework.boot" version "3.5.3"
+}
+
+group = 'dev.peoplelogic.agents.sample'
+project.description = "Peoplelogic Agent SDK Sample"
+def agent_sdk_version = "${agent_sdk_version}"
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(17) } }
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+    maven {
+        name = "SDK Repository"
+        url = uri("https://maven.pkg.github.com/peoplelogic/agent-sdk")
+        credentials {
+            username = System.getenv("GITHUB_USERNAME") ?: project.findProperty("github.username")
+            password = System.getenv("GITHUB_PACKAGES_TOKEN") ?: project.findProperty("github.packagesToken")
+        }
+    }
+}
+
+dependencies {
+    implementation(platform("ai.peoplelogic:agent-sdk-dependencies:${agent_sdk_version}"))
+    // Include teh SDK
+    implementation "ai.peoplelogic:agent-sdk"
+    implementation "dev.langchain4j:langchain4j"
+}
